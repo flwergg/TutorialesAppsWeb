@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import BookReviews from '@/components/BookReviews.vue';
 import { BookService } from '@/services/BookService'
 import { useRoute } from 'vue-router';
 
@@ -74,6 +75,9 @@ function formatToCOP(price: number): string {
                 </div>
               </div>
             </div>
+          </div>
+          <div class="bg-white rounded-lg shadow-md p-6 mt-8">
+            <BookReviews :book-id="book.id" />
           </div>
         </div>
       </div>
