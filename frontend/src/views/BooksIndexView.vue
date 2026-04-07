@@ -1,18 +1,12 @@
 <script setup lang="ts">
-import { BookService } from '@/services/BookService';
-import { formatToCOP } from '@/utils/formatters';
-import { ref, watch } from 'vue';
+import { BookService } from '@/services/BookService.js';
+import type { BookInterface } from '@/interfaces/BookInterface.js';
+import { onMounted, ref } from 'vue';
 
-const books = BookService.getBooks();
-const filteredBooks = ref(books);
+const books = ref<BookInterface[]>([]);
 
-// selectors
-const selectorCategories = BookService.getCategories();
-const selectedCategory = ref('');
-
-// watchers
-watch(selectedCategory, (newCategory) => {
-  filteredBooks.value = BookService.filterByCategory(newCategory);
+onMounted(async () => {
+  books.value = await BookService.getBooks();
 });
 </script>
 
@@ -26,14 +20,9 @@ watch(selectedCategory, (newCategory) => {
           >+ Add Book</RouterLink
         >
       </div>
-      <select v-model="selectedCategory">
-        <option value="">All Categories</option>
-        <option v-for="category in selectorCategories" :key="category">
-          {{ category }}
-        </option>
-      </select>
+
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div v-for="book in filteredBooks" :key="book.id">
+        <div v-for="book in books" :key="book.id">
           <div
             class="bg-white rounded-lg shadow-md hover:shadow-lg transition duration-300 p-6 border border-gray-200"
           >
@@ -68,7 +57,7 @@ watch(selectedCategory, (newCategory) => {
             <div class="bg-gray-50 rounded-lg p-3 mb-4">
               <div class="flex justify-between text-sm">
                 <span class="text-gray-600">Price:</span>
-                <span class="font-semibold">${{ formatToCOP(book.price) }} COP</span>
+                <span class="font-semibold">${{ book.price }} COP</span>
               </div>
             </div>
 
